@@ -31,6 +31,10 @@ class DescendantsObserver<T extends HTMLElement> {
     });
   }
 
+  getCount() {
+    return this.map.size;
+  }
+
   getValues() {
     return Array.from(this.map.values());
   }
