@@ -28,3 +28,6 @@ This enables component composition:
 ```sh
 yarn add descendants-observer
 ```
+
+> We recommend using wrapping each descendant item in `React.memo` to
+> prevent unneeded re-rendering for item whose index doesn't change.

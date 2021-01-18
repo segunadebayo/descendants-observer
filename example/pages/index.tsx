@@ -1,12 +1,10 @@
-import 'react-app-polyfill/ie11';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import {
   DescendantsContext,
   useDescendant,
   useDescendants,
   useDescendantsContext,
 } from '@descendants/react';
+import * as React from 'react';
 
 const MenuContext = React.createContext({} as any);
 
@@ -66,7 +64,7 @@ const MenuItem = React.memo(({ children }) => {
   );
 });
 
-const App = () => {
+const Page = () => {
   const [show, setShow] = React.useState(false);
   const [show2, setShow2] = React.useState(false);
 
@@ -96,4 +94,4 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+export default Page;
