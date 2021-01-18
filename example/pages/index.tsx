@@ -64,7 +64,7 @@ const MenuItem = React.memo(({ children }) => {
   );
 });
 
-const Page = () => {
+const Component = () => {
   const [show, setShow] = React.useState(false);
   const [show2, setShow2] = React.useState(false);
 
@@ -92,6 +92,13 @@ const Page = () => {
       </Menu>
     </div>
   );
+};
+
+const Page = () => {
+  const items = Array.from({ length: 1000 }).map((_, i) => (
+    <Component key={i} />
+  ));
+  return <div>{items}</div>;
 };
 
 export default Page;

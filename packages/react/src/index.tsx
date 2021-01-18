@@ -44,16 +44,11 @@ export function useDescendant(props: UseDescendantsReturn) {
   const ref = React.useRef<HTMLElement>(null);
 
   useIsomorphicLayoutEffect(() => {
-    const frameId = requestAnimationFrame(() => {
-      if (!ref.current) return;
-      const datasetIndex = Number(ref.current.dataset.index);
-      if (datasetIndex !== index) {
-        setIndex(datasetIndex);
-      }
-    });
-    return () => {
-      cancelAnimationFrame(frameId);
-    };
+    if (!ref.current) return;
+    const datasetIndex = Number(ref.current.dataset.index);
+    if (datasetIndex !== index) {
+      setIndex(datasetIndex);
+    }
   });
 
   return {
