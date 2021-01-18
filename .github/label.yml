@@ -6,9 +6,9 @@ react:
   - packages/react/*
   - packages/react/**/*
 
-utils:
-  - packages/utils/*
-  - packages/utils/**/*
+core:
+  - packages/core/*
+  - packages/core/**/*
 
 cypress:
   - cypress/*

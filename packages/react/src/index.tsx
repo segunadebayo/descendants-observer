@@ -17,14 +17,34 @@ export function useDescendants<RootEl extends HTMLElement = HTMLDivElement>() {
 }
 
 export interface UseDescendantProps extends ReturnType<typeof useDescendants> {}
+export interface UseDescendantsReturn
+  extends ReturnType<typeof useDescendants> {}
 
-export function useDescendant(props: UseDescendantProps) {
+export const DescendantsContext = React.createContext(
+  {} as UseDescendantsReturn
+);
+
+DescendantsContext.displayName = 'DescendantsProvider';
+
+export function useDescendantsContext() {
+  const context = React.useContext(DescendantsContext);
+
+  if (context == null) {
+    throw new Error(
+      'useDescendantsContext must be used within DescendantsProvider'
+    );
+  }
+
+  return context;
+}
+
+export function useDescendant(props: UseDescendantsReturn) {
   const { observer } = props;
   const [index, setIndex] = React.useState(-1);
   const ref = React.useRef<HTMLElement>(null);
 
   useIsomorphicLayoutEffect(() => {
-    const id = requestAnimationFrame(() => {
+    const frameId = requestAnimationFrame(() => {
       if (!ref.current) return;
       const datasetIndex = Number(ref.current.dataset.index);
       if (datasetIndex !== index) {
@@ -32,7 +52,7 @@ export function useDescendant(props: UseDescendantProps) {
       }
     });
     return () => {
-      cancelAnimationFrame(id);
+      cancelAnimationFrame(frameId);
     };
   });
 

@@ -87,7 +87,7 @@ const App = () => {
   );
 };
 
-describe('@thefakeorg/react', () => {
+describe('@descendants/react', () => {
   it('works', () => {
     expect(true).toBe(true);
   });
