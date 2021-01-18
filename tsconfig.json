@@ -6,8 +6,8 @@
     "baseUrl": ".",
     "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
-      "@thefakeorg/utils": ["packages/utils/src"],
-      "@thefakeorg/react": ["packages/react/src"],
+      "@descendants/core": ["packages/core/src"],
+      "@descendants/react": ["packages/react/src"],
       "$test/*": ["test/*"]
     }
   }

@@ -1,8 +1,8 @@
 {
-  "name": "@thefakeorg/utils",
+  "name": "@descendants/core",
   "version": "0.0.1",
-  "description": "Internal, shared utilities",
-  "author": "Jared Palmer",
+  "description": "The descendants core functions and class",
+  "author": "Segun Adebayo",
   "scripts": {
     "start": "tsdx watch --tsconfig tsconfig.build.json --verbose --noClean",
     "build": "tsdx build --tsconfig tsconfig.build.json",
@@ -11,13 +11,14 @@
     "prepublish": "npm run build"
   },
   "main": "dist/index.js",
-  "module": "dist/utils.esm.js",
+  "module": "dist/core.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "README.md",
     "dist"
   ],
   "dependencies": {
+    "auto-bind": "^4.0.0",
     "tslib": "^2.0.0"
   },
   "publishConfig": {

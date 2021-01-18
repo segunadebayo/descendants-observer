@@ -1,4 +1,4 @@
-describe('@thefakeorg/utils', () => {
+describe('@descendants/core', () => {
   it('works', () => {
     expect(true).toBe(true);
   });
