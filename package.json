@@ -1,5 +1,5 @@
 {
-  "name": "mono",
+  "name": "descendants-observer",
   "private": true,
   "workspaces": [
     "packages/*",

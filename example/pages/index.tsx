@@ -46,9 +46,7 @@ const Menu: React.FC = ({ children }) => {
 
 const MenuItem = React.memo(({ children }) => {
   const { selected, setSelected } = React.useContext(MenuContext);
-  const ctx = useDescendantsContext();
-
-  const { index, ref } = useDescendant(ctx);
+  const { index, ref } = useDescendant();
   const isSelected = index === selected;
 
   return (

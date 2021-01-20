@@ -38,8 +38,8 @@ export function useDescendantsContext() {
   return context;
 }
 
-export function useDescendant(props: UseDescendantsReturn) {
-  const { observer } = props;
+export function useDescendant() {
+  const { observer } = useDescendantsContext();
   const [index, setIndex] = React.useState(-1);
   const ref = React.useRef<HTMLElement>(null);
 
