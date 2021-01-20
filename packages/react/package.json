@@ -1,6 +1,6 @@
 {
   "name": "@descendants/react",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "React hook to observe descendant nodes and their indices",
   "author": "Segun Adebayo",
   "repository": {
@@ -27,7 +27,7 @@
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
-    "@descendants/core": "^0.0.1",
+    "@descendants/core": "^1.0.0",
     "merge-refs": "^1.0.0",
     "tslib": "^2.0.0"
   },
