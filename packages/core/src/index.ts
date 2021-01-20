@@ -99,7 +99,9 @@ class DescendantsObserver<T extends HTMLElement> {
     this.sort(sorted);
   }
 
-  register(nodeOrOptions: T | null | Record<string, any>) {
+  register(
+    nodeOrOptions: T | null | { focusable: boolean; disabled: boolean }
+  ) {
     if (nodeOrOptions == null) return;
 
     if (nodeOrOptions instanceof HTMLElement) {
@@ -108,7 +110,13 @@ class DescendantsObserver<T extends HTMLElement> {
     }
 
     return (node: T | null) => {
-      this.registerNode(node, nodeOrOptions);
+      const { focusable, disabled } = nodeOrOptions;
+
+      const trulyDisabled = disabled && !focusable;
+
+      if (!trulyDisabled) {
+        this.registerNode(node, nodeOrOptions);
+      }
     };
   }
 }
