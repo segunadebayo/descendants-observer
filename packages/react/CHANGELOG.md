@@ -1,5 +1,16 @@
 # @descendants/react
 
+## 1.0.0
+
+### Major Changes
+
+- [`d9f2721`](https://github.com/segunadebayo/descendants-observer/commit/d9f27211548d2eb741fbe04d9917846d731048ac) Thanks [@segunadebayo](https://github.com/segunadebayo)! - First release of descendants observer.
+
+### Patch Changes
+
+- Updated dependencies [[`d9f2721`](https://github.com/segunadebayo/descendants-observer/commit/d9f27211548d2eb741fbe04d9917846d731048ac)]:
+  - @descendants/core@1.0.0
+
 ## 0.0.2
 
 ### Patch Changes
