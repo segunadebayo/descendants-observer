@@ -1,9 +1,14 @@
 import * as React from 'react';
 import DescendantsObserver from '@descendants/core';
 
-export function useDescendants<RootEl extends HTMLElement = HTMLDivElement>() {
-  const [observer] = React.useState(() => new DescendantsObserver());
-  const ref = React.useRef<RootEl>(null);
+export function useDescendants<
+  RootElement extends HTMLElement = HTMLDivElement,
+  DescendantElement extends HTMLElement = HTMLElement
+>() {
+  const [observer] = React.useState(
+    () => new DescendantsObserver<DescendantElement>()
+  );
+  const ref = React.useRef<RootElement>(null);
 
   useIsomorphicLayoutEffect(() => {
     if (!ref.current) return;
