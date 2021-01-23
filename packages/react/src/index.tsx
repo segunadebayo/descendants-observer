@@ -1,5 +1,5 @@
+import DescendantsObserver, { RegisterOptions } from '@descendants/core';
 import * as React from 'react';
-import DescendantsObserver from '@descendants/core';
 
 export function useDescendants<
   RootElement extends HTMLElement = HTMLDivElement,
@@ -8,11 +8,22 @@ export function useDescendants<
   const [observer] = React.useState(
     () => new DescendantsObserver<DescendantElement>()
   );
+
   const ref = React.useRef<RootElement>(null);
+
+  const [, force] = React.useState({});
 
   useIsomorphicLayoutEffect(() => {
     if (!ref.current) return;
-    observer.attach(ref.current);
+
+    observer.attach({
+      target: ref.current,
+      // if any descendant is removed, re-render the list
+      onMutation() {
+        force({});
+      },
+    });
+
     return () => {
       observer.destroy();
     };
@@ -43,22 +54,30 @@ export function useDescendantsContext() {
   return context;
 }
 
-export function useDescendant() {
+export function useDescendant<T extends HTMLElement = HTMLElement>(
+  options: RegisterOptions = {}
+) {
   const { observer } = useDescendantsContext();
   const [index, setIndex] = React.useState(-1);
-  const ref = React.useRef<HTMLElement>(null);
+  const ref = React.useRef<T>(null);
 
   useIsomorphicLayoutEffect(() => {
     if (!ref.current) return;
-    const datasetIndex = Number(ref.current.dataset.index);
-    if (datasetIndex !== index) {
-      setIndex(datasetIndex);
+    const dataIndex = Number(ref.current.dataset.index);
+    if (index != dataIndex && !Number.isNaN(dataIndex)) {
+      setIndex(dataIndex);
     }
   });
 
+  const refCallback = options ? observer.register(options) : observer.register;
+
   return {
+    observer,
     index,
-    ref: mergeRefs(observer.register, ref),
+    enabledIndex: observer.enabledIndexOf(ref.current),
+    ref,
+    //@ts-ignore
+    register: mergeRefs(refCallback, ref),
   };
 }
 

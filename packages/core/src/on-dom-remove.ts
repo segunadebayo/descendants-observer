@@ -8,20 +8,26 @@ function isNodeDetached(el: Node | null): boolean {
   return isNodeDetached(el.parentNode);
 }
 
-export default function onDomRemove(
-  node: HTMLElement,
-  map: Map<any, any>,
-  fn: (item: any) => void
-) {
+interface DomRemoveOptions {
+  target: HTMLElement;
+  map: Map<any, any>;
+  forEach: (item: any) => void;
+  onMutation?: () => void;
+}
+
+export default function onDomRemove(options: DomRemoveOptions) {
+  const { target, map, forEach, onMutation } = options;
+
   const observer = new MutationObserver(() => {
     map.forEach(item => {
       if (item && isNodeDetached(item.node)) {
-        fn(item);
+        forEach(item);
       }
     });
+    onMutation?.();
   });
 
-  observer.observe(node, {
+  observer.observe(target, {
     childList: true,
     subtree: true,
   });

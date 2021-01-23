@@ -2,7 +2,6 @@ import {
   DescendantsContext,
   useDescendant,
   useDescendants,
-  useDescendantsContext,
 } from '@descendants/react';
 import * as React from 'react';
 
@@ -21,7 +20,7 @@ const Menu: React.FC = ({ children }) => {
         <div role="menu" ref={ref} style={{ maxWidth: 320 }}>
           <button
             onClick={() => {
-              const prev = observer.getPrev(selected, true);
+              const prev = observer.prevEnabled(selected);
               prev.node.focus();
               setSelected(prev.index);
             }}
@@ -30,7 +29,7 @@ const Menu: React.FC = ({ children }) => {
           </button>
           <button
             onClick={() => {
-              const next = observer.getNext(selected, true);
+              const next = observer.nextEnabled(selected);
               next.node.focus();
               setSelected(next.index);
             }}
@@ -46,18 +45,19 @@ const Menu: React.FC = ({ children }) => {
 
 const MenuItem = React.memo(({ children }) => {
   const { selected, setSelected } = React.useContext(MenuContext);
-  const { index, ref } = useDescendant();
-  const isSelected = index === selected;
+  debugger;
+  const { enabledIndex, register } = useDescendant<HTMLDivElement>();
+  const isSelected = enabledIndex === selected;
 
   return (
     <div
       role="menuitem"
-      ref={ref}
+      ref={register}
       aria-selected={isSelected}
-      onMouseMove={() => setSelected(index)}
+      onMouseMove={() => setSelected(enabledIndex)}
       style={{ color: isSelected ? 'red' : 'black' }}
     >
-      {children} - {index}
+      {children} - {enabledIndex}
     </div>
   );
 });

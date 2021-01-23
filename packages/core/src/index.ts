@@ -1,122 +1,173 @@
-import bindMethods from 'auto-bind';
+import bind from 'auto-bind';
 import onDomRemove from './on-dom-remove';
 import sortNodes from './sort-nodes';
 
-interface Descendant<T> {
+export interface RegisterOptions {
+  disabled?: boolean;
+  id?: string;
+}
+export interface Descendant<T> extends RegisterOptions {
   node: T;
   index: number;
 }
 
+export interface AttachOptions {
+  target: HTMLElement;
+  onMutation?: () => void;
+}
+
+function nextIndex(current: number, max: number, loop: boolean) {
+  let next = current + 1;
+  if (loop && next >= max) next = 0;
+  return next;
+}
+
+function prevIndex(current: number, max: number, loop: boolean) {
+  let next = current - 1;
+  if (loop && next < 0) next = max;
+  return next;
+}
+
 class DescendantsObserver<T extends HTMLElement> {
   private observer?: MutationObserver;
-  private map = new Map<T, Descendant<T>>();
+  private nodes = new Map<T, Descendant<T>>();
 
   constructor() {
-    bindMethods(this);
+    bind(this);
   }
 
-  attach(rootEl: HTMLElement) {
-    this.destroy();
-    this.observer = onDomRemove(rootEl, this.map, descendant => {
-      this.map.delete(descendant.node);
-      const sorted = sortNodes(Array.from(this.map.keys()));
-      this.sort(sorted);
+  /**
+   * Method to attach the MutatationObserver to the target
+   * and invokes the function when a child is removed.
+   */
+  attach(options: AttachOptions) {
+    const { target, onMutation } = options;
+
+    this.observer = onDomRemove({
+      target,
+      map: this.nodes,
+      onMutation,
+      forEach: descendant => {
+        this.nodes.delete(descendant.node);
+        const sorted = sortNodes(Array.from(this.nodes.keys()));
+        this.assignIndex(sorted);
+      },
     });
   }
 
-  private sort(nodes: Node[]) {
-    this.map.forEach(descendant => {
+  /**
+   * Method to detach and cleanup the MutationObserver and nodelist
+   */
+  destroy() {
+    this.observer?.disconnect();
+    this.nodes.clear();
+  }
+
+  private assignIndex(nodes: Node[]) {
+    this.nodes.forEach(descendant => {
       descendant.index = nodes.indexOf(descendant.node);
       descendant.node.dataset.index = descendant.index.toString();
     });
   }
 
-  getCount() {
-    return this.map.size;
+  count() {
+    return this.nodes.size;
   }
 
-  getValues() {
-    return Array.from(this.map.values());
+  enabledCount() {
+    return this.enabledValues().length;
   }
 
-  getKeys() {
-    return Array.from(this.map.keys());
+  values() {
+    const values = Array.from(this.nodes.values());
+    return values.sort((a, b) => a.index - b.index);
   }
 
-  getOrderedValues() {
-    return this.getValues().sort((a, b) => a.index - b.index);
+  enabledValues() {
+    return this.values()
+      .filter(descendant => !descendant.disabled)
+      .map((descendant, index) => ({ ...descendant, index }));
   }
 
-  getFirst() {
-    return this.getValueAtIndex(0);
+  item(index: number) {
+    return this.values()[index];
   }
 
-  getLast() {
-    return this.getValueAtIndex(this.map.size - 1);
+  enabledItem(index: number) {
+    return this.enabledValues()[index];
   }
 
-  getValueAtIndex(index: number) {
-    return this.getOrderedValues()[index];
+  first() {
+    return this.item(0);
   }
 
-  getIndexByNode(node?: T) {
+  firstEnabled() {
+    return this.enabledItem(0);
+  }
+
+  last() {
+    return this.item(this.nodes.size - 1);
+  }
+
+  lastEnabled() {
+    const lastIndex = this.enabledValues().length - 1;
+    return this.enabledItem(lastIndex);
+  }
+
+  indexOf(node: T | null) {
     if (!node) return -1;
-    return this.map.get(node)?.index ?? -1;
+    return this.nodes.get(node)?.index ?? -1;
   }
 
-  getNext(index: number, loop = false) {
-    let next = index + 1;
-    if (loop && next >= this.map.size) {
-      next = 0;
-    }
-    return this.getValueAtIndex(next);
+  enabledIndexOf(node: T | null) {
+    if (!node) return -1;
+    return this.enabledValues().findIndex(i => i.node.isSameNode(node));
   }
 
-  getPrev(index: number, loop = false) {
-    let next = index - 1;
-    if (loop && next < 0) {
-      next = this.map.size - 1;
-    }
-    return this.getValueAtIndex(next);
+  next(index: number, loop = true) {
+    const next = nextIndex(index, this.count(), loop);
+    return this.item(next);
   }
 
-  destroy() {
-    this.observer?.disconnect();
-    this.map.clear();
+  nextEnabled(index: number, loop = true) {
+    const next = nextIndex(index, this.enabledCount(), loop);
+    return this.enabledItem(next);
   }
 
-  private registerNode(node: T | null, options: Record<string, any> = {}) {
-    if (!node || this.map.has(node)) return;
+  prev(index: number, loop = true) {
+    const prev = prevIndex(index, this.count() - 1, loop);
+    return this.item(prev);
+  }
 
-    const sorted = sortNodes(this.getKeys().concat(node));
+  prevEnabled(index: number, loop = true) {
+    const prev = prevIndex(index, this.enabledCount() - 1, loop);
+    return this.enabledItem(prev);
+  }
 
-    this.map.set(node, {
+  private registerNode(node: T | null, options: RegisterOptions = {}) {
+    if (!node || this.nodes.has(node)) return;
+
+    const keys = Array.from(this.nodes.keys()).concat(node);
+    const sorted = sortNodes(keys);
+
+    this.nodes.set(node, {
       node,
       index: -1,
-      ...options,
+      disabled: !!options.disabled,
     });
 
-    this.sort(sorted);
+    this.assignIndex(sorted);
   }
 
-  register(
-    nodeOrOptions: T | null | { focusable: boolean; disabled: boolean }
-  ) {
+  register(nodeOrOptions: T | null | RegisterOptions) {
     if (nodeOrOptions == null) return;
 
     if (nodeOrOptions instanceof HTMLElement) {
-      this.registerNode(nodeOrOptions);
-      return;
+      return this.registerNode(nodeOrOptions);
     }
 
     return (node: T | null) => {
-      const { focusable, disabled } = nodeOrOptions;
-
-      const trulyDisabled = disabled && !focusable;
-
-      if (!trulyDisabled) {
-        this.registerNode(node, nodeOrOptions);
-      }
+      this.registerNode(node, nodeOrOptions);
     };
   }
 }
