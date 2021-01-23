@@ -1,5 +1,5 @@
 import bind from 'auto-bind';
-import onDomRemove from './on-dom-remove';
+import onDomRemove, { isElement } from './on-dom-remove';
 import sortNodes from './sort-nodes';
 
 export interface RegisterOptions {
@@ -162,7 +162,7 @@ class DescendantsObserver<T extends HTMLElement> {
   register(nodeOrOptions: T | null | RegisterOptions) {
     if (nodeOrOptions == null) return;
 
-    if (nodeOrOptions instanceof HTMLElement) {
+    if (isElement(nodeOrOptions)) {
       return this.registerNode(nodeOrOptions);
     }
 

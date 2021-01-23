@@ -1,7 +1,15 @@
+export function isElement(el: any): el is HTMLElement {
+  return (
+    typeof el == 'object' &&
+    'nodeType' in el &&
+    el.nodeType === Node.ELEMENT_NODE
+  );
+}
+
 function isNodeDetached(el: Node | null): boolean {
   if (!el) return true;
 
-  if (!(el instanceof HTMLElement) || el.nodeType === Node.DOCUMENT_NODE) {
+  if (!isElement(el) || el.nodeType === Node.DOCUMENT_NODE) {
     return false;
   }
 
