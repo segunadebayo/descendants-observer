@@ -7,7 +7,7 @@ const Component = () => {
   return (
     <>
       <pre data-testid="output">
-        {JSON.stringify(observer.getValues(), null, 2)}
+        {JSON.stringify(observer.values(), null, 2)}
       </pre>
       <div ref={ref}>
         <button ref={observer.register} id="opt1">
