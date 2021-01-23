@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "lerna": "lerna",
-    "start": "lerna run start --stream --parallel",
+    "start": "lerna run start --stream --parallel --ignore @descendants/example",
     "test": "lerna run test --",
     "lint": "lerna run lint -- --fix",
     "build": "lerna run build",
