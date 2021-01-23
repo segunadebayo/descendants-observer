@@ -59,7 +59,7 @@ function Menu({ children }) {
         <div role="menu" ref={ref} style={{ maxWidth: 320 }}>
           <button
             onClick={() => {
-              const prev = observer.getPrev(selected, true);
+              const prev = observer.prev(selected, true);
               prev.node.focus();
               setSelected(prev.index);
             }}
@@ -68,7 +68,7 @@ function Menu({ children }) {
           </button>
           <button
             onClick={() => {
-              const next = observer.getNext(selected, true);
+              const next = observer.next(selected, true);
               next.node.focus();
               setSelected(next.index);
             }}
