@@ -1,5 +1,16 @@
 # @descendants/react
 
+## 1.1.0
+
+### Minor Changes
+
+- [`b80613f`](https://github.com/segunadebayo/descendants-observer/commit/b80613f4da1463735caa73e2e252fa890db06db1) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fixed bug and add support for enabled index
+
+### Patch Changes
+
+- Updated dependencies [[`b80613f`](https://github.com/segunadebayo/descendants-observer/commit/b80613f4da1463735caa73e2e252fa890db06db1)]:
+  - @descendants/core@1.1.0
+
 ## 1.0.0
 
 ### Major Changes
