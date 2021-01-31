@@ -1,5 +1,14 @@
 # @descendants/react
 
+## 1.1.1
+
+### Patch Changes
+
+- [`1bfd03f`](https://github.com/segunadebayo/descendants-observer/commit/1bfd03f6225ce0a6cd417e59a7526bc0153dfed8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Refactor code and reduce bundle size
+
+- Updated dependencies [[`1bfd03f`](https://github.com/segunadebayo/descendants-observer/commit/1bfd03f6225ce0a6cd417e59a7526bc0153dfed8)]:
+  - @descendants/core@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes
