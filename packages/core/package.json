@@ -17,10 +17,6 @@
     "README.md",
     "dist"
   ],
-  "dependencies": {
-    "auto-bind": "^4.0.0",
-    "tslib": "^2.0.0"
-  },
   "publishConfig": {
     "access": "public"
   }

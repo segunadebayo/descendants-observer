@@ -27,9 +27,7 @@
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
-    "@descendants/core": "^1.1.0",
-    "merge-refs": "^1.0.0",
-    "tslib": "^2.0.0"
+    "@descendants/core": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"

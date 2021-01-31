@@ -1,35 +1,12 @@
-import DescendantsObserver, { RegisterOptions } from '@descendants/core';
+import Observer, { RegisterOptions } from '@descendants/core';
 import * as React from 'react';
 
-export function useDescendants<
-  RootElement extends HTMLElement = HTMLDivElement,
-  DescendantElement extends HTMLElement = HTMLElement
->() {
-  const [observer] = React.useState(
-    () => new DescendantsObserver<DescendantElement>()
-  );
-
-  const ref = React.useRef<RootElement>(null);
-
-  const [, force] = React.useState({});
-
+export function useDescendants<T extends HTMLElement = HTMLElement>() {
+  const [observer] = React.useState(() => new Observer<T>());
   useIsomorphicLayoutEffect(() => {
-    if (!ref.current) return;
-
-    observer.attach({
-      target: ref.current,
-      // if any descendant is removed, re-render the list
-      onMutation() {
-        force({});
-      },
-    });
-
-    return () => {
-      observer.destroy();
-    };
-  }, [observer]);
-
-  return { ref, observer };
+    return () => observer.destroy();
+  }, []);
+  return { observer };
 }
 
 export interface UseDescendantProps extends ReturnType<typeof useDescendants> {}
@@ -60,6 +37,13 @@ export function useDescendant<T extends HTMLElement = HTMLElement>(
   const { observer } = useDescendantsContext();
   const [index, setIndex] = React.useState(-1);
   const ref = React.useRef<T>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    return () => {
+      if (!ref.current) return;
+      observer.unregister(ref.current);
+    };
+  }, []);
 
   useIsomorphicLayoutEffect(() => {
     if (!ref.current) return;

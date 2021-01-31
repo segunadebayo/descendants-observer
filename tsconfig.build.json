@@ -2,9 +2,8 @@
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
-    "importHelpers": true,
     "declaration": true,
-    "sourceMap": true,   
+    "sourceMap": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

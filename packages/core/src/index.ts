@@ -1,6 +1,9 @@
-import bind from 'auto-bind';
-import onDomRemove, { isElement } from './on-dom-remove';
 import sortNodes from './sort-nodes';
+
+const isElement = (el: any): el is HTMLElement =>
+  typeof el == 'object' &&
+  'nodeType' in el &&
+  el.nodeType === Node.ELEMENT_NODE;
 
 export interface RegisterOptions {
   disabled?: boolean;
@@ -30,136 +33,101 @@ function prevIndex(current: number, max: number, loop: boolean) {
 
 class DescendantsObserver<T extends HTMLElement> {
   private observer?: MutationObserver;
-  private nodes = new Map<T, Descendant<T>>();
+  private descendants = new Map<T, Descendant<T>>();
 
-  constructor() {
-    bind(this);
-  }
+  unregister = (node: T) => {
+    this.descendants.delete(node);
+    const sorted = sortNodes(Array.from(this.descendants.keys()));
+    this.assignIndex(sorted);
+  };
 
-  /**
-   * Method to attach the MutatationObserver to the target
-   * and invokes the function when a child is removed.
-   */
-  attach(options: AttachOptions) {
-    const { target, onMutation } = options;
-
-    this.observer = onDomRemove({
-      target,
-      map: this.nodes,
-      onMutation,
-      forEach: descendant => {
-        this.nodes.delete(descendant.node);
-        const sorted = sortNodes(Array.from(this.nodes.keys()));
-        this.assignIndex(sorted);
-      },
-    });
-  }
-
-  /**
-   * Method to detach and cleanup the MutationObserver and nodelist
-   */
-  destroy() {
+  destroy = () => {
     this.observer?.disconnect();
-    this.nodes.clear();
-  }
+    this.descendants.clear();
+  };
 
-  private assignIndex(nodes: Node[]) {
-    this.nodes.forEach(descendant => {
-      descendant.index = nodes.indexOf(descendant.node);
+  private assignIndex = (descendants: Node[]) => {
+    this.descendants.forEach(descendant => {
+      descendant.index = descendants.indexOf(descendant.node);
       descendant.node.dataset.index = descendant.index.toString();
     });
-  }
+  };
 
-  count() {
-    return this.nodes.size;
-  }
+  count = () => this.descendants.size;
 
-  enabledCount() {
-    return this.enabledValues().length;
-  }
+  enabledCount = () => this.enabledValues().length;
 
-  values() {
-    const values = Array.from(this.nodes.values());
+  values = () => {
+    const values = Array.from(this.descendants.values());
     return values.sort((a, b) => a.index - b.index);
-  }
+  };
 
-  enabledValues() {
-    return this.values()
+  enabledValues = () =>
+    this.values()
       .filter(descendant => !descendant.disabled)
       .map((descendant, index) => ({ ...descendant, index }));
-  }
 
-  item(index: number) {
-    return this.values()[index];
-  }
+  item = (index: number) => this.values()[index];
 
-  enabledItem(index: number) {
-    return this.enabledValues()[index];
-  }
+  enabledItem = (index: number) => this.enabledValues()[index];
 
-  first() {
-    return this.item(0);
-  }
+  first = () => this.item(0);
 
-  firstEnabled() {
-    return this.enabledItem(0);
-  }
+  firstEnabled = () => this.enabledItem(0);
 
-  last() {
-    return this.item(this.nodes.size - 1);
-  }
+  last = () => this.item(this.descendants.size - 1);
 
-  lastEnabled() {
+  lastEnabled = () => {
     const lastIndex = this.enabledValues().length - 1;
     return this.enabledItem(lastIndex);
-  }
+  };
 
-  indexOf(node: T | null) {
+  indexOf = (node: T | null) => {
     if (!node) return -1;
-    return this.nodes.get(node)?.index ?? -1;
-  }
+    return this.descendants.get(node)?.index ?? -1;
+  };
 
-  enabledIndexOf(node: T | null) {
+  enabledIndexOf = (node: T | null) => {
     if (!node) return -1;
     return this.enabledValues().findIndex(i => i.node.isSameNode(node));
-  }
+  };
 
-  next(index: number, loop = true) {
+  next = (index: number, loop = true) => {
     const next = nextIndex(index, this.count(), loop);
     return this.item(next);
-  }
+  };
 
-  nextEnabled(index: number, loop = true) {
+  nextEnabled = (index: number, loop = true) => {
     const next = nextIndex(index, this.enabledCount(), loop);
     return this.enabledItem(next);
-  }
+  };
 
-  prev(index: number, loop = true) {
+  prev = (index: number, loop = true) => {
     const prev = prevIndex(index, this.count() - 1, loop);
     return this.item(prev);
-  }
+  };
 
-  prevEnabled(index: number, loop = true) {
+  prevEnabled = (index: number, loop = true) => {
     const prev = prevIndex(index, this.enabledCount() - 1, loop);
     return this.enabledItem(prev);
-  }
+  };
 
-  private registerNode(node: T | null, options: RegisterOptions = {}) {
-    if (!node || this.nodes.has(node)) return;
+  private registerNode = (node: T | null, options: RegisterOptions = {}) => {
+    if (!node || this.descendants.has(node)) return;
 
-    const keys = Array.from(this.nodes.keys()).concat(node);
+    const keys = Array.from(this.descendants.keys()).concat(node);
     const sorted = sortNodes(keys);
 
-    this.nodes.set(node, {
+    this.descendants.set(node, {
       node,
       index: -1,
       disabled: !!options.disabled,
     });
 
     this.assignIndex(sorted);
-  }
+  };
 
-  register(nodeOrOptions: T | null | RegisterOptions) {
+  register = (nodeOrOptions: T | null | RegisterOptions) => {
     if (nodeOrOptions == null) return;
 
     if (isElement(nodeOrOptions)) {
@@ -169,7 +137,7 @@ class DescendantsObserver<T extends HTMLElement> {
     return (node: T | null) => {
       this.registerNode(node, nodeOrOptions);
     };
-  }
+  };
 }
 
 export default DescendantsObserver;

@@ -9,7 +9,7 @@ const MenuContext = React.createContext({} as any);
 
 const Menu: React.FC = ({ children }) => {
   const descendants = useDescendants();
-  const { ref, observer } = descendants;
+  const { observer } = descendants;
 
   const [selected, setSelected] = React.useState(1);
   const context = React.useMemo(() => ({ selected, setSelected }), [selected]);
@@ -17,7 +17,7 @@ const Menu: React.FC = ({ children }) => {
   return (
     <DescendantsContext.Provider value={descendants}>
       <MenuContext.Provider value={context}>
-        <div role="menu" ref={ref} style={{ maxWidth: 320 }}>
+        <div role="menu" style={{ maxWidth: 320 }}>
           <button
             onClick={() => {
               const prev = observer.prevEnabled(selected);
@@ -45,7 +45,6 @@ const Menu: React.FC = ({ children }) => {
 
 const MenuItem = React.memo(({ children }) => {
   const { selected, setSelected } = React.useContext(MenuContext);
-  debugger;
   const { enabledIndex, register } = useDescendant<HTMLDivElement>();
   const isSelected = enabledIndex === selected;
 

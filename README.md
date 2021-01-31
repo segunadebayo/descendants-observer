@@ -47,7 +47,7 @@ function Menu({ children }) {
   const descendants = useDescendants();
 
   // 2. Grab the `ref` and `observer` in the bag
-  const { ref, observer } = descendants;
+  const { observer } = descendants;
 
   const [selected, setSelected] = React.useState(1);
   const context = React.useMemo(() => ({ selected, setSelected }), [selected]);
@@ -56,7 +56,7 @@ function Menu({ children }) {
     // 3. Add the descendants context
     <DescendantsContext.Provider value={descendants}>
       <MenuContext.Provider value={context}>
-        <div role="menu" ref={ref} style={{ maxWidth: 320 }}>
+        <div role="menu" style={{ maxWidth: 320 }}>
           <button
             onClick={() => {
               const prev = observer.prev(selected, true);

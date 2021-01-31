@@ -8,7 +8,7 @@ import * as React from 'react';
 const AccordionContext = React.createContext({} as any);
 
 const Accordion: React.FC = ({ children }) => {
-  const descendants = useDescendants<HTMLDivElement, HTMLButtonElement>();
+  const descendants = useDescendants<HTMLButtonElement>();
 
   const [selected, setSelected] = React.useState(1);
   const context = React.useMemo(() => ({ selected, setSelected }), [selected]);
@@ -16,9 +16,7 @@ const Accordion: React.FC = ({ children }) => {
   return (
     <DescendantsContext.Provider value={descendants}>
       <AccordionContext.Provider value={context}>
-        <div ref={descendants.ref} style={{ maxWidth: 320 }}>
-          {children}
-        </div>
+        <div style={{ maxWidth: 320 }}>{children}</div>
       </AccordionContext.Provider>
     </DescendantsContext.Provider>
   );
@@ -28,7 +26,7 @@ const AccordionPanels: React.FC = ({ children }) => {
   const descendants = useDescendants();
   return (
     <DescendantsContext.Provider value={descendants}>
-      <div ref={descendants.ref}>{children}</div>
+      <div>{children}</div>
     </DescendantsContext.Provider>
   );
 };
