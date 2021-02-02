@@ -1,5 +1,11 @@
 # @descendants/utils
 
+## 1.1.2
+
+### Patch Changes
+
+- [`c31d2ea`](https://github.com/segunadebayo/descendants-observer/commit/c31d2ea62b661ae0198205fcb8ececc963a872fd) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Remove unused type and properties
+
 ## 1.1.1
 
 ### Patch Changes
