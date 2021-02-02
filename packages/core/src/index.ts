@@ -14,11 +14,6 @@ export interface Descendant<T> extends RegisterOptions {
   index: number;
 }
 
-export interface AttachOptions {
-  target: HTMLElement;
-  onMutation?: () => void;
-}
-
 function nextIndex(current: number, max: number, loop: boolean) {
   let next = current + 1;
   if (loop && next >= max) next = 0;
@@ -32,7 +27,6 @@ function prevIndex(current: number, max: number, loop: boolean) {
 }
 
 class DescendantsObserver<T extends HTMLElement> {
-  private observer?: MutationObserver;
   private descendants = new Map<T, Descendant<T>>();
 
   unregister = (node: T) => {
@@ -42,7 +36,6 @@ class DescendantsObserver<T extends HTMLElement> {
   };
 
   destroy = () => {
-    this.observer?.disconnect();
     this.descendants.clear();
   };
 
